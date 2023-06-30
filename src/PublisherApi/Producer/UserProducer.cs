@@ -33,15 +33,12 @@ public class UserProducer : IProducer
         var body = Encoding.UTF8.GetBytes(@event);
         var properties = _channel.CreateBasicProperties();
         properties.ContentType = "application/json";
-        //properties.Persistent = true;
-        //properties.DeliveryMode = 2;
         properties.DeliveryMode = 1; // Doesn't persist to disk
         properties.Timestamp = new AmqpTimestamp(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
         _channel.ExchangeDeclare(exchange: "userExchange", ExchangeType.Direct, durable: true, autoDelete: false);
         _channel.QueueDeclare(queue: "user", durable: false, exclusive: false, autoDelete: false);
         _channel.QueueBind(queue: "user", exchange: "userExchange", routingKey: integrationEvent);
-        
         _channel.BasicPublish("userExchange", integrationEvent, properties, body);
     }
 

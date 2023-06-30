@@ -1,6 +1,5 @@
 ﻿using Architecture.EventDriven.PublisherApi.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace Architecture.EventDriven.PublisherApi.Services;
 

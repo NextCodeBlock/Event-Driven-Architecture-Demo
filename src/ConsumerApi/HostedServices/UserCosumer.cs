@@ -44,8 +44,6 @@ public class UserConsumer : IHostedService
         _channel.QueueDeclare(queue: "user", durable: false, exclusive: false, autoDelete: false);
         _channel.QueueBind(queue: "user", exchange: "userExchange", routingKey: "user.*");
         
-        //_channel.BasicQos(0, 10, false);
-
         var consumer = new AsyncEventingBasicConsumer(this._channel);
         consumer.Received += OnMessageRecieved;
 
@@ -64,8 +62,7 @@ public class UserConsumer : IHostedService
         this._connection?.Dispose();
         return Task.CompletedTask;
     }
-
-    // Publish a received  message with "reply:" prefix
+    
     private Task OnMessageRecieved(object? model, BasicDeliverEventArgs @event)
     {
         using var scope = _scopeFactory.CreateScope();
@@ -78,9 +75,6 @@ public class UserConsumer : IHostedService
         var data = JsonSerializer.Deserialize<User>(message);
         var type = @event.RoutingKey;
         Console.WriteLine($"RoutingKey: {type}");
-
-        //if (data == null) 
-        //    return Task.CompletedTask;
 
         switch (type)
         {
