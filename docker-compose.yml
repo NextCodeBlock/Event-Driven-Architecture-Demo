@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+   rabbitMQ:
+     image: rabbitmq:3-management
+   publisherApi:
+     image: ${DOCKER_REGISTRY-next}/architecture/eventdriven/publisher/api
+     build:
+       context: .
+       dockerfile: src/PublisherApi/Dockerfile
+     depends_on:
+       - rabbitMQ
+
+   consumerApi:
+     image: ${DOCKER_REGISTRY-next}/architecture/eventdriven/consumer/api
+     build:
+       context: .
+       dockerfile: src/ConsumerApi/Dockerfile
+     depends_on:
+       - rabbitMQ

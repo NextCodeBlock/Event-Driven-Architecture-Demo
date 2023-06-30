@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  rabbitMQ:
+    hostname: "rabbitMQ"
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - ACCEPT_EULA=Y
+
+  publisherApi:
+    hostname: "publisherapi"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - Kestrel__Certificates__Default__Password=@123456789@
+      - Kestrel__Certificates__Default__Path=/app/https/certificate.pfx
+    ports:
+      - "8000:80"
+      - "8001:443"
+    restart: on-failure 
+
+  consumerApi:
+    hostname: "publisherapi"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - Kestrel__Certificates__Default__Password=@123456789@
+      - Kestrel__Certificates__Default__Path=/app/https/certificate.pfx
+    ports:
+      - "9000:80"
+      - "9001:443"
+    restart: on-failure 
